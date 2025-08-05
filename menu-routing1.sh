@@ -47,14 +47,14 @@ add_rule() {
       jq '.
           | .routing.rules += [{
               "type":"field",
-              "domainSuffix":[],
+              "domain":[],
               "outboundTag":"server-routing"
             }]' "$CONFIG" > tmp && mv tmp "$CONFIG"
     fi
 
     # ===== Tambahkan DOMAIN ke rule =====
     jq --arg d "$DOMAIN" \
-      '(.routing.rules[] | select(.outboundTag=="server-routing") .domainSuffix) += [$d]' \
+      '(.routing.rules[] | select(.outboundTag=="server-routing") .domain) += [$d]' \
        "$CONFIG" > tmp && mv tmp "$CONFIG"
 
     echo "✔ Domain '$DOMAIN' telah ditambahkan."
@@ -67,7 +67,7 @@ del_rule() {
     [ -z "$DOMAIN" ] && echo "batal." && return
 
     jq --arg d "$DOMAIN" \
-      '(.routing.rules[] | select(.outboundTag=="server-routing") .domainSuffix) -= [$d]' \
+      '(.routing.rules[] | select(.outboundTag=="server-routing") .domain) -= [$d]' \
       "$CONFIG" > tmp && mv tmp "$CONFIG"
 
     echo "✔ Domain '$DOMAIN' dihapus."
@@ -75,8 +75,8 @@ del_rule() {
 }
 
 change_account() {
-    read -rp "Address VLESS SG : " ADDR
-    read -rp "UUID VLESS SG    : " UUID
+    read -rp "Address VLESS ROUTING : " ADDR
+    read -rp "UUID VLESS ROUTING    : " UUID
 
     jq --arg a "$ADDR" --arg u "$UUID" \
       '(.outbounds[]| select(.tag=="server-routing")| .settings.vnext[0].address) = $a |
