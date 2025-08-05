@@ -6,7 +6,7 @@ CONFIG="/var/lib/marzban/xray_config.json"
 
 show_rules() {
     echo "===== RULE DOMAIN YANG TERPASANG (server-routing) ====="
-    jq -r '.routing.rules[] | select(.outboundTag=="server-routing") .domainSuffix[]?' "$CONFIG" | nl -w2 -s'. '
+    jq -r '.routing.rules[] | select(.outboundTag=="server-routing") .domain[]?' "$CONFIG" | nl -w2 -s'. '
     echo "========================================================"
 }
 
